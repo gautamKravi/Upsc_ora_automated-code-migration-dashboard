@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automated Code Migration Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo"></div>
+    <span class="header-title">Gitea Repository Control Panel</span>
+  </div>
+  <div class="org-badge">
+    <span class="org-dot"></span>
+    <span>Org: <strong id="orgName">Connecting…</strong></span>
+  </div>
+</header>
+
+<!-- ══ MAIN ════════════════════════════════════════════ -->
+<main class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-label">Gitea · Automation · DevOps</p>
+    <h1>Automated Code Migration<br>& Repository Deployment</h1>
+    <p>Upload your service manifest, validate branch mappings, and let the system create repositories and push code to Gitea — all in one click.</p>
+  </div>
+
+  <!-- METRICS -->
+  <div class="metrics">
+    <div class="metric-card">
+      <div class="metric-icon blue">📦</div>
+      <div class="metric-body">
+        <div class="metric-label">Total Services</div>
+        <div class="metric-value blue" id="metricTotal">—</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon green">✅</div>
+      <div class="metric-body">
+        <div class="metric-label">Completed</div>
+        <div class="metric-value green" id="metricDone">—</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon red">❌</div>
+      <div class="metric-body">
+        <div class="metric-label">Failed</div>
+        <div class="metric-value red" id="metricFailed">—</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon orange">🔄</div>
+      <div class="metric-body">
+        <div class="metric-label">Already Exists</div>
+        <div class="metric-value orange" id="metricExists">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📋 System Guidelines &amp; Security Notice</span>
+    </div>
+    <div class="card-body">
+      <div class="info-grid">
+        <div class="info-item warn-item">
+          <span class="info-emoji">⚠️</span>
+          <div class="info-text">
+            <h4>RBAC Not Configured — Security Risk</h4>
+            <p>Without Role-Based Access Control, any user can push directly to any branch. This exposes your repositories to unauthorized changes and data leaks.</p>
+          </div>
+        </div>
+        <div class="info-item red-item">
+          <span class="info-emoji">🔓</span>
+          <div class="info-text">
+            <h4>Branch Protection Required</h4>
+            <p>Without branch protection on <code>main</code>, developers can commit directly — risking broken production deployments. Always enable PR-only merges.</p>
+          </div>
+        </div>
+        <div class="info-item good-item">
+          <span class="info-emoji">✅</span>
+          <div class="info-text">
+            <h4>What Happens After Execution</h4>
+            <p>For each service: a private Gitea repository is created, code is pushed from your local branch to <code>main</code>, and status is updated in real time.</p>
+          </div>
+        </div>
+        <div class="info-item info-item2">
+          <span class="info-emoji">🔐</span>
+          <div class="info-text">
+            <h4>Admin-Only Push Policy</h4>
+            <p>Only the Admin account may push directly to <code>main</code>. All developers must open a Pull Request for review before any merge is allowed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📁 Service Manifest Upload</span>
+    </div>
+    <div class="card-body">
+      <div class="upload-zone" id="uploadZone" onclick="triggerFileInput()">
+        <div class="upload-icon" id="uploadIcon">📂</div>
+        <h3 id="uploadHeading">Drop your Excel file here</h3>
+        <p id="uploadSub">Supports .xlsx — columns: Service Name, Current Branch</p>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="uploadFile()" />
+        <button class="btn btn-primary" id="uploadBtn" onclick="event.stopPropagation(); triggerFileInput()">
+          ⬆️ Choose File &amp; Upload
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card" id="tableCard" style="display:none">
+    <div class="card-header">
+      <span class="card-title">🗂️ Service Repository Matrix</span>
+      <button class="btn btn-primary btn-sm" onclick="processAll()">▶ Run All Validated</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Service Name</th>
+            <th>Branch</th>
+            <th>Validate</th>
+            <th>Action</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  MigrateOps · Automated Repository Migration Dashboard · Powered by Gitea
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
